@@ -1,10 +1,10 @@
 import { wagmiConnectors } from "./wagmiConnectors";
+import { Routing } from "@hoprnet/uhttp-lib";
 import { Chain, createClient, custom, fallback, http } from "viem";
 import { hardhat, mainnet } from "viem/chains";
 import { createConfig } from "wagmi";
 import scaffoldConfig from "~~/scaffold.config";
 import { getAlchemyHttpUrl } from "~~/utils/scaffold-eth";
-import { Routing } from '@hoprnet/uhttp-lib';
 
 const { targetNetworks, usePrivateRpc, pollingInterval, uhttpClientId } = scaffoldConfig;
 const router = new Routing.Client(uhttpClientId, { forceZeroHop: true, clientAssociatedExitNodes: true });
@@ -19,41 +19,56 @@ export const wagmiConfig = createConfig({
   connectors: wagmiConnectors,
   ssr: true,
   client({ chain }) {
+    const isHardhat = chain.id === (hardhat as Chain).id;
     const alchemyHttpUrl = getAlchemyHttpUrl(chain.id);
-    const rpcFallbacks = alchemyHttpUrl ? [http(alchemyHttpUrl), http()] : [http()];
+    const httpTransport = http();
+    const rpcFallbacks = alchemyHttpUrl ? [http(alchemyHttpUrl), httpTransport] : [httpTransport];
 
-    // The fallback transport is used when usePrivateRpc is false
+    // The plain transport is used when usePrivateRpc is false
     const fallbackTransport = fallback(rpcFallbacks);
-    //
-    // The fallback transport is used when usePrivateRpc is true
+
+    const provider = alchemyHttpUrl || chain?.rpcUrls.default.http[0];
+
+    console.log(`CHAIN: ${chain.id}`);
+    console.log(`ALCHEMY HTTP URL: ${alchemyHttpUrl}`);
+    console.log(`USE PRIVATE RPC: ${usePrivateRpc}`);
+    console.log(`UHTTP CLIENT ID: ${uhttpClientId}`);
+    console.log(`CLIENT PROVIDER: ${provider}`);
+    console.log(`isHardhat: ${isHardhat}`);
+
+    // The custom private transport is used when usePrivateRpc is true
     const customTransport = custom({
-      async request({ method, params }) {
+      async request(req) {
         try {
-          const response = await router.fetch(url);
+          console.log("PRIVATE RPC REQUEST:", provider, req);
+          const response = await router.fetch(provider, {
+            body: JSON.stringify(req),
+            method: "POST",
+          });
+          console.log("PRIVATE RPC RESPONSE:", response);
+
           if (!response.ok) {
             throw new Error(`Response status: ${response.status}`);
           }
+
           const json = await response.json();
           console.log("PRIVATE RPC RESPONSE:", json);
 
           return "error" in json ? json.error : json.result;
-        } catch (e) {
-          console.error("PRIVATE RPC ERROR:", e.message);
+        } catch (e: any) {
+          console.error("PRIVATE RPC ERROR:", e);
         }
-      }
+      },
     });
 
-    const transport = usePrivateRpc ? customTransport : fallbackTransport;
+    // The custom private transport may only be used when using a publicly
+    // reachable RPC endpoint.
+    const transport = usePrivateRpc && !isHardhat ? customTransport : fallbackTransport;
 
     return createClient({
       chain,
-      transport: fallback(rpcFallbacks),
-
-      ...(chain.id !== (hardhat as Chain).id
-        ? {
-            pollingInterval,
-          }
-        : {}),
+      transport,
+      ...(!isHardhat ? { pollingInterval } : {}),
     });
   },
 });
