@@ -12,7 +12,7 @@ export type ScaffoldConfig = {
 
 const scaffoldConfig = {
   // The networks on which your DApp is live
-  targetNetworks: [chains.hardhat],
+  targetNetworks: [chains.optimismSepolia],
 
   // The interval at which your front-end polls the RPC servers for new data
   // it has no effect if you only target the local network (default is 4000)
@@ -33,7 +33,7 @@ const scaffoldConfig = {
   onlyLocalBurnerWallet: true,
 
   // Enable use of uHTTP for all RPC requests
-  usePrivateRpc: false,
+  usePrivateRpc: process.env.NEXT_PUBLIC_USE_PRIVATE_RPC == "true" || false,
 
   // The uHTTP client ID, opt-in and only required when usePrivateRpc is true
   uhttpClientId: process.env.NEXT_PUBLIC_UHTTP_CLIENT_ID || "",
