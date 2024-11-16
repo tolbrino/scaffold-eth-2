@@ -65,7 +65,16 @@ export const wagmiConfig = createConfig({
 
     // The custom private transport may only be used when using a publicly
     // reachable RPC endpoint.
-    const transport = usePrivateRpc && !isHardhat ? customTransport : fallbackTransport;
+    let transport;
+    if (usePrivateRpc && !isHardhat) {
+      console.log("Using private RPC access via uHTTP");
+      transport = customTransport;
+    } else {
+      transport = fallbackTransport;
+      if (!isHardhat) {
+        console.log("Using non-private RPC access");
+      }
+    }
 
     return createClient({
       chain,
