@@ -6,11 +6,13 @@ export type ScaffoldConfig = {
   alchemyApiKey: string;
   walletConnectProjectId: string;
   onlyLocalBurnerWallet: boolean;
+  usePrivateRpc: boolean;
+  uhttpClientId: string;
 };
 
 const scaffoldConfig = {
   // The networks on which your DApp is live
-  targetNetworks: [chains.hardhat],
+  targetNetworks: [chains.optimism],
 
   // The interval at which your front-end polls the RPC servers for new data
   // it has no effect if you only target the local network (default is 4000)
@@ -29,6 +31,12 @@ const scaffoldConfig = {
 
   // Only show the Burner Wallet when running on hardhat network
   onlyLocalBurnerWallet: true,
+
+  // Enable use of uHTTP for all RPC requests
+  usePrivateRpc: process.env.NEXT_PUBLIC_USE_PRIVATE_RPC == "true" || false,
+
+  // The uHTTP client ID, opt-in and only required when usePrivateRpc is true
+  uhttpClientId: process.env.NEXT_PUBLIC_UHTTP_CLIENT_ID || "",
 } as const satisfies ScaffoldConfig;
 
 export default scaffoldConfig;
