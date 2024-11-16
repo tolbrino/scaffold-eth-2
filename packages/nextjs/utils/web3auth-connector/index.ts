@@ -24,7 +24,7 @@ export const web3AuthWallet = ({ projectId, walletConnectParameters }: web3AuthW
   const privateKeyProvider = new EthereumPrivateKeyProvider({ config: { chainConfig } });
 
   const web3auth = new Web3AuthNoModal({
-    clientId: process.env.NEXT_WEB3AUTH_CLIENT_ID ?? exampleClientId,
+    clientId: process.env.NEXT_PUBLIC_WEB3AUTH_CLIENT_ID ?? exampleClientId,
     web3AuthNetwork: WEB3AUTH_NETWORK.SAPPHIRE_MAINNET,
     privateKeyProvider,
   });
