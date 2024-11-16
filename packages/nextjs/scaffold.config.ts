@@ -6,6 +6,8 @@ export type ScaffoldConfig = {
   alchemyApiKey: string;
   walletConnectProjectId: string;
   onlyLocalBurnerWallet: boolean;
+  usePrivateRpc: boolean;
+  uhttpClientId: string;
 };
 
 const scaffoldConfig = {
@@ -29,6 +31,12 @@ const scaffoldConfig = {
 
   // Only show the Burner Wallet when running on hardhat network
   onlyLocalBurnerWallet: true,
+
+  // Enable use of uHTTP for all RPC requests
+  usePrivateRpc: false,
+
+  // The uHTTP client ID, opt-in and only required when usePrivateRpc is true
+  uhttpClientId: process.env.NEXT_PUBLIC_UHTTP_CLIENT_ID || "",
 } as const satisfies ScaffoldConfig;
 
 export default scaffoldConfig;
