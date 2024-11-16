@@ -889,16 +889,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hoprnet/uhttp-lib@npm:^3.7.1":
-  version: 3.8.3
-  resolution: "@hoprnet/uhttp-lib@npm:3.8.3"
+"@hoprnet/uhttp-lib@npm:3.2.1":
+  version: 3.2.1
+  resolution: "@hoprnet/uhttp-lib@npm:3.2.1"
   dependencies:
     "@hoprnet/uhttp-crypto": ^1.0.1
     debug: ^4.3.4
     isomorphic-ws: ^5.0.0
     lz-string: ^1.5.0
     ws: ^8.16.0
-  checksum: 783c15947b56ea44a05feb9c9c51a2deb809190616dbcd422a0e236fd9204e63a19ca2ab92d2f1a958c740b4ba5e10aefd74321caab0db34bb5eb8018d186c1f
+  checksum: 3d7c787c46b95b4d72feccc3d114df781e982b46f4a0b3e53a530384d1622df70e52760d94d2dcb1d210878f089106271696836a952bb36b467ff1e657628181
   languageName: node
   linkType: hard
 
@@ -2334,7 +2334,7 @@ __metadata:
   resolution: "@se-2/nextjs@workspace:packages/nextjs"
   dependencies:
     "@heroicons/react": ^2.1.5
-    "@hoprnet/uhttp-lib": ^3.7.1
+    "@hoprnet/uhttp-lib": 3.2.1
     "@rainbow-me/rainbowkit": 2.1.6
     "@tanstack/react-query": ^5.59.15
     "@trivago/prettier-plugin-sort-imports": ^4.3.0
